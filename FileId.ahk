@@ -42,7 +42,8 @@ FilePathToIndex(path, &high, &low, outhandle := 0)
 ; Returns string on success or 0 on failure.
 FileIdToPath(hint, high, low, outhandle := 0)
 {
-	static fileid := (() => (NumPut("UInt", 24, "UInt", 0, buf := Buffer(24)), buf))(), nameinfo := Buffer(520)
+	; buffer is a little too small if it's supposed to be receiving long paths T.B.H.
+	static fileid := (() => (NumPut("UInt", 24, "UInt", 0, buf := Buffer(24)), buf))(), nameinfo := Buffer(1024)
 	
 	NumPut("UInt", low, "UInt", high, fileid, 8)
 	
