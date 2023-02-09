@@ -72,11 +72,11 @@ FileIdToPath(hint, high, low, outhandle := 0)
 	else
 		DllCall("CloseHandle", "Ptr", handle)
 	
-	length := NumGet(nameinfo, 0, "UInt")
 	; That hex number is C: in UTF-16 (4 bytes, same as an Int)
 	; We're replacing the first two bytes of this buffer with valid text and then interpreting the whole buffer as a string
 	; I kinda sorta accidentally happened upon this because I couldn't be bothered to copy the string after the length to a new buffer
+	; length >> 1 is because it just works, okay? Does the API really put the length in bytes, not in wchars there?
+	length := NumGet(nameinfo, 0, "UInt")
 	NumPut("UInt", 0x003a0043, nameinfo)
-	; MsgBox StrGet(nameinfo, length + 2, "UTF-16")
-	return StrGet(nameinfo, length + 2, "UTF-16")
+	return StrGet(nameinfo, (length >> 1) + 2, "UTF-16")
 }
