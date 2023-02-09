@@ -40,7 +40,8 @@ FilePathToIndex(path, &high, &low, outhandle := 0)
 }
 
 ; Returns string on success or 0 on failure.
-FileIdToPath(hint, high, low, outhandle := 0)
+; volumelabel is a string whose first character is the volume label to prepend to the path.
+FileIdToPath(hint, volumelabel, high, low, outhandle := 0)
 {
 	; buffer is a little too small if it's supposed to be receiving long paths T.B.H.
 	static fileid := (() => (NumPut("UInt", 24, "UInt", 0, buf := Buffer(24)), buf))(), nameinfo := Buffer(1024)
@@ -78,8 +79,8 @@ FileIdToPath(hint, high, low, outhandle := 0)
 	; That hex number is C: in UTF-16 (4 bytes, same as an Int)
 	; We're replacing the first two bytes of this buffer with valid text and then interpreting the whole buffer as a string
 	; I kinda sorta accidentally happened upon this because I couldn't be bothered to copy the string after the length to a new buffer
-	; length >> 1 is because it just works, okay? Does the API really put the length in bytes, not in wchars there?
+	; length >> 1 turns length in bytes into length in wchars
 	length := NumGet(nameinfo, 0, "UInt")
-	NumPut("UInt", 0x003a0043, nameinfo)
+	NumPut("UShort", Ord(volumelabel), "UShort", 0x003a, nameinfo)
 	return StrGet(nameinfo, (length >> 1) + 2, "UTF-16")
 }
