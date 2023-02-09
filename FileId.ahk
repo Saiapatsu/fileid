@@ -1,3 +1,5 @@
+; https://www.codeproject.com/questions/273746/given-an-ntfs-file-id-is-there-any-official-way-to
+
 ; Get 64-bit NTFS file index (or whatever it's supposed to be called) in two halves.
 ; Optionally specify a VarRef to get the file handle. You are responsible for closing it.
 ; DllCall("CloseHandle", "Ptr", handle) || MsgBox("CloseHandle 1 failed " A_LastError)
@@ -45,7 +47,7 @@ FileIdToPath(hint, high, low, outhandle := 0)
 	NumPut("UInt", low, "UInt", high, fileid, 8)
 	
 	; The endianness of the file ID and whether hVolumeHint is necessary were figured out by trial and error.
-	; https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-openfilebyid?redirectedfrom=MSDN
+	; https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-openfilebyid
 	; This unfortunate bastard requires an open file handle on the same volume.
 	; It also allows opening a file with just the 64-bit file ID???
 	handle := DllCall("OpenFileById"
